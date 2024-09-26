@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Curricular</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .periodo {
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            position: relative; 
+        }
+        .disciplina {
+            background-color: gray; 
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 5px;
+            position: relative; 
+        }
+        .concluida {
+            background-color: green; 
+        }
+        .seta {
+            position: absolute;
+            left: 100%; /* Posição à direita da disciplina */
+            top: 50%; /* Centro vertical */
+            margin-left: 5px; /* Espaço entre a disciplina e a seta */
+            transform: translateY(-50%); /* Centraliza verticalmente */
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: 1fr; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Grade Curricular TADS</h1>
+    <p>Total de horas concluídas: {{ total_horas_concluidas }} horas</p>
+    <div class="container">
+        {% for periodo, disciplinas in disciplinas_por_periodo.items %}
+        <div class="periodo">
+            <h2>Período {{ periodo }}</h2>
+            {% for disciplina in disciplinas %}
+            <div class="disciplina {% if disciplina.concluida %}concluida{% endif %}">
+                <strong>{{ disciplina.nome }}</strong><br>
+                Carga Horária: {{ disciplina.carga_horaria }} horas<br>
+                Status: 
+                {% if disciplina.concluida %}
+                    Concluída
+                {% else %}
+                    Não Concluída
+                {% endif %}
+                <br>
+                <form method="POST" action="{% url 'marcar_concluida' disciplina.id %}">
+                    {% csrf_token %}
+                    <button type="submit">
+                        {% if disciplina.concluida %}
+                            Desmarcar
+                        {% else %}
+                            Marcar como Concluída
+                        {% endif %}
+                    </button>
+                </form>
+                
+                {% if disciplina.requisitos.length > 0 %}
+                    {% for requisito in disciplina.requisitos %}
+                        <div class="seta">
+                            <svg width="10" height="10">
+                                <polygon points="0,0 10,5 0,10" fill="black" />
+                            </svg>
+                        </div>
+                        <div class="requisito">{{ requisito.nome }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>        
+</body>
+</html>

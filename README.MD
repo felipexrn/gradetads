@@ -24,13 +24,18 @@
     pip install django
     ```
 
-4. **Rode as migrações:**
+4. **Caminhe para o doretório do projeto:**
+    ```bash
+    cd grade_tads
+    ```
+
+5. **Rode as migrações:**
     ```bash
     python manage.py makemigrations
     python manage.py migrate
     ```
 
-5. **Rode o servidor:**
+6. **Rode o servidor:**
     ```bash
     python manage.py runserver
     ```
